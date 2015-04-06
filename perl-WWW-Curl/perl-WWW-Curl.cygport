@@ -1,0 +1,12 @@
+CPAN_AUTHOR=SZBALINT
+inherit perl
+
+NAME="perl-WWW-Curl"
+VERSION=4.17
+RELEASE=1
+CATEGORY="Perl"
+SUMMARY="Perl extension interface for libcurl"
+DESCRIPTION="WWW::Curl is a perl extension interface for libcurl."
+
+DEPEND="libcrypt-devel libcurl-devel"
+REQUIRES="libcurl"
