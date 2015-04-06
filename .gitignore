@@ -1,0 +1,5 @@
+*.tar.gz
+*.tar.xz
+setup.log*
+*.i686/
+*.x86_64/
