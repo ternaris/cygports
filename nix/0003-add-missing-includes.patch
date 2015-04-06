@@ -1,0 +1,50 @@
+From c3adfac70082255f4d01935632f983325d65c054 Mon Sep 17 00:00:00 2001
+From: Florian Friesdorf <flo@chaoflow.net>
+Date: Tue, 14 Oct 2014 22:59:10 +0200
+Subject: [PATCH 3/4] add missing includes
+
+---
+ src/libmain/shared.cc          | 1 +
+ src/libstore/optimise-store.cc | 1 +
+ src/nix-daemon/nix-daemon.cc   | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/src/libmain/shared.cc b/src/libmain/shared.cc
+index a390654..e96a492 100644
+--- a/src/libmain/shared.cc
++++ b/src/libmain/shared.cc
+@@ -14,6 +14,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <signal.h>
++#include <stdlib.h>
+ 
+ 
+ namespace nix {
+diff --git a/src/libstore/optimise-store.cc b/src/libstore/optimise-store.cc
+index d833f3a..2d4e301 100644
+--- a/src/libstore/optimise-store.cc
++++ b/src/libstore/optimise-store.cc
+@@ -9,6 +9,7 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ 
+ 
+ namespace nix {
+diff --git a/src/nix-daemon/nix-daemon.cc b/src/nix-daemon/nix-daemon.cc
+index 8814fe3..88dd70a 100644
+--- a/src/nix-daemon/nix-daemon.cc
++++ b/src/nix-daemon/nix-daemon.cc
+@@ -17,6 +17,7 @@
+ #include <sys/un.h>
+ #include <fcntl.h>
+ #include <errno.h>
++#include <stdlib.h>
+ 
+ using namespace nix;
+ 
+-- 
+2.1.1
+

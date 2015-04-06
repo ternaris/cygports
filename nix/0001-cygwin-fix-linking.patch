@@ -1,0 +1,133 @@
+From 4633dc0fceab0c06f0fca433d39f1680b8b541ee Mon Sep 17 00:00:00 2001
+From: Florian Friesdorf <flo@chaoflow.net>
+Date: Tue, 14 Oct 2014 22:47:33 +0200
+Subject: [PATCH 1/4] cygwin: fix linking
+
+---
+ Makefile                      | 1 -
+ perl/local.mk                 | 4 +++-
+ src/download-via-ssh/local.mk | 4 ++--
+ src/nix-daemon/local.mk       | 4 ++--
+ src/nix-env/local.mk          | 4 ++--
+ src/nix-hash/local.mk         | 4 ++--
+ src/nix-instantiate/local.mk  | 4 ++--
+ src/nix-store/local.mk        | 4 ++--
+ 8 files changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 3a425b5..4f8c503 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,6 @@ makefiles = \
+   src/boost/format/local.mk \
+   src/libutil/local.mk \
+   src/libstore/local.mk \
+-  src/libmain/local.mk \
+   src/libexpr/local.mk \
+   src/nix-hash/local.mk \
+   src/nix-store/local.mk \
+diff --git a/perl/local.mk b/perl/local.mk
+index 74c054e..dff2aef 100644
+--- a/perl/local.mk
++++ b/perl/local.mk
+@@ -23,7 +23,9 @@ ifeq ($(perlbindings), yes)
+ 
+   Store_SOURCES := $(Store_DIR)/Store.cc
+ 
+-  Store_LIBS = libstore
++  Store_LIBS = libstore libutil
++
++  Store_LDFLAGS = /usr/lib/perl5/core_perl/CORE/msys-perl5_20.dll
+ 
+   Store_CXXFLAGS = \
+     -I$(shell $(perl) -e 'use Config; print $$Config{archlibexp};')/CORE \
+diff --git a/src/download-via-ssh/local.mk b/src/download-via-ssh/local.mk
+index 80f4c38..d343932 100644
+--- a/src/download-via-ssh/local.mk
++++ b/src/download-via-ssh/local.mk
+@@ -2,10 +2,10 @@ programs += download-via-ssh
+ 
+ download-via-ssh_DIR := $(d)
+ 
+-download-via-ssh_SOURCES := $(d)/download-via-ssh.cc
++download-via-ssh_SOURCES := $(d)/download-via-ssh.cc $(d)/../libmain/shared.cc $(d)/../libmain/stack.cc
+ 
+ download-via-ssh_INSTALL_DIR := $(libexecdir)/nix/substituters
+ 
+ download-via-ssh_CXXFLAGS = -Isrc/nix-store
+ 
+-download-via-ssh_LIBS = libmain libstore libutil libformat
++download-via-ssh_LIBS = libstore libutil libformat
+diff --git a/src/nix-daemon/local.mk b/src/nix-daemon/local.mk
+index bab84e7..285faee 100644
+--- a/src/nix-daemon/local.mk
++++ b/src/nix-daemon/local.mk
+@@ -2,9 +2,9 @@ programs += nix-daemon
+ 
+ nix-daemon_DIR := $(d)
+ 
+-nix-daemon_SOURCES := $(d)/nix-daemon.cc
++nix-daemon_SOURCES := $(d)/nix-daemon.cc $(d)/../libmain/shared.cc $(d)/../libmain/stack.cc
+ 
+-nix-daemon_LIBS = libmain libstore libutil libformat
++nix-daemon_LIBS = libstore libutil libformat
+ 
+ ifeq ($(OS), SunOS)
+         nix-daemon_LDFLAGS += -lsocket
+diff --git a/src/nix-env/local.mk b/src/nix-env/local.mk
+index e80719c..1f8ad58 100644
+--- a/src/nix-env/local.mk
++++ b/src/nix-env/local.mk
+@@ -2,6 +2,6 @@ programs += nix-env
+ 
+ nix-env_DIR := $(d)
+ 
+-nix-env_SOURCES := $(wildcard $(d)/*.cc)
++nix-env_SOURCES := $(wildcard $(d)/*.cc) $(d)/../libmain/shared.cc $(d)/../libmain/stack.cc
+ 
+-nix-env_LIBS = libexpr libmain libstore libutil libformat
++nix-env_LIBS = libexpr libstore libutil libformat
+diff --git a/src/nix-hash/local.mk b/src/nix-hash/local.mk
+index 7c290ca..6d87475 100644
+--- a/src/nix-hash/local.mk
++++ b/src/nix-hash/local.mk
+@@ -2,6 +2,6 @@ programs += nix-hash
+ 
+ nix-hash_DIR := $(d)
+ 
+-nix-hash_SOURCES := $(d)/nix-hash.cc
++nix-hash_SOURCES := $(d)/nix-hash.cc $(d)/../libmain/shared.cc $(d)/../libmain/stack.cc
+ 
+-nix-hash_LIBS = libmain libstore libutil libformat
++nix-hash_LIBS = libstore libutil libformat
+diff --git a/src/nix-instantiate/local.mk b/src/nix-instantiate/local.mk
+index 7d1bc5e..84319fb 100644
+--- a/src/nix-instantiate/local.mk
++++ b/src/nix-instantiate/local.mk
+@@ -2,6 +2,6 @@ programs += nix-instantiate
+ 
+ nix-instantiate_DIR := $(d)
+ 
+-nix-instantiate_SOURCES := $(d)/nix-instantiate.cc
++nix-instantiate_SOURCES := $(d)/nix-instantiate.cc $(d)/../libmain/shared.cc $(d)/../libmain/stack.cc
+ 
+-nix-instantiate_LIBS = libexpr libmain libstore libutil libformat
++nix-instantiate_LIBS = libexpr libstore libutil libformat
+diff --git a/src/nix-store/local.mk b/src/nix-store/local.mk
+index 7f93e4c..6492089 100644
+--- a/src/nix-store/local.mk
++++ b/src/nix-store/local.mk
+@@ -2,8 +2,8 @@ programs += nix-store
+ 
+ nix-store_DIR := $(d)
+ 
+-nix-store_SOURCES := $(wildcard $(d)/*.cc)
++nix-store_SOURCES := $(wildcard $(d)/*.cc) $(d)/../libmain/shared.cc $(d)/../libmain/stack.cc
+ 
+-nix-store_LIBS = libmain libstore libutil libformat
++nix-store_LIBS = libstore libutil libformat
+ 
+ nix-store_LDFLAGS = -lbz2
+-- 
+2.1.1
+

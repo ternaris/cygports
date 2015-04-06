@@ -1,0 +1,29 @@
+From d74fc81658d9dc25bf3be5a955b23b172f64348a Mon Sep 17 00:00:00 2001
+From: Florian Friesdorf <flo@chaoflow.net>
+Date: Thu, 16 Oct 2014 02:44:14 +0200
+Subject: [PATCH 4/4] autodetect libperl dll location
+
+---
+ perl/local.mk | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/perl/local.mk b/perl/local.mk
+index dff2aef..161dc66 100644
+--- a/perl/local.mk
++++ b/perl/local.mk
+@@ -25,7 +25,11 @@ ifeq ($(perlbindings), yes)
+ 
+   Store_LIBS = libstore libutil
+ 
+-  Store_LDFLAGS = /usr/lib/perl5/core_perl/CORE/msys-perl5_20.dll
++  #Store_LDFLAGS = /usr/lib/perl5/core_perl/CORE/msys-perl5_20.dll
++  #Store_LDFLAGS = /usr/lib/perl5/5.14/i686-cygwin-threads-64int/CORE/cygperl5_14.dll
++  archlib = $(shell perl -E 'use Config; print $$Config{archlib};')
++  libperl = $(shell perl -E 'use Config; print $$Config{libperl};')
++  Store_LDFLAGS = $(shell find ${archlib} -name ${libperl})
+ 
+   Store_CXXFLAGS = \
+     -I$(shell $(perl) -e 'use Config; print $$Config{archlibexp};')/CORE \
+-- 
+2.1.1
+

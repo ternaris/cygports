@@ -1,0 +1,51 @@
+From 5272f596b1d279ed8580642a2e82a64e4040b7ad Mon Sep 17 00:00:00 2001
+From: Florian Friesdorf <flo@chaoflow.net>
+Date: Tue, 14 Oct 2014 22:50:00 +0200
+Subject: [PATCH 2/4] cygwin: fix flags
+
+---
+ mk/lib.mk       | 6 ++++--
+ mk/libraries.mk | 3 +--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/mk/lib.mk b/mk/lib.mk
+index 56e162d..a27ef89 100644
+--- a/mk/lib.mk
++++ b/mk/lib.mk
+@@ -29,8 +29,10 @@ mandir ?= $(prefix)/share/man
+ BUILD_SHARED_LIBS ?= 1
+ 
+ ifeq ($(BUILD_SHARED_LIBS), 1)
+-  GLOBAL_CFLAGS += -fPIC
+-  GLOBAL_CXXFLAGS += -fPIC
++  #GLOBAL_CFLAGS += -fPIC
++  #GLOBAL_CXXFLAGS += -fPIC
++  GLOBAL_CFLAGS += -U__STRICT_ANSI__
++  GLOBAL_CXXFLAGS += -U__STRICT_ANSI__
+   ifneq ($(OS), Darwin)
+    ifneq ($(OS), SunOS)
+     GLOBAL_LDFLAGS += -Wl,--no-copy-dt-needed-entries
+diff --git a/mk/libraries.mk b/mk/libraries.mk
+index 4b8292c..8f8ca1e 100644
+--- a/mk/libraries.mk
++++ b/mk/libraries.mk
+@@ -3,7 +3,7 @@ libs-list :=
+ ifeq ($(OS), Darwin)
+   SO_EXT = dylib
+ else
+-  SO_EXT = so
++  SO_EXT = dll
+ endif
+ 
+ # Build a library with symbolic name $(1).  The library is defined by
+@@ -62,7 +62,6 @@ define build-library
+       endif
+     else
+       ifneq ($(OS), Darwin)
+-        $(1)_LDFLAGS += -Wl,-z,defs
+       endif
+     endif
+ 
+-- 
+2.1.1
+
